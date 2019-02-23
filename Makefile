@@ -1,7 +1,7 @@
 builder = go build -ldflags="-s -w" -x -o dist/wenku8
 package = github.com/popu125/wenku8epub
 
-all: linux windows macos
+all: linux windows macos upx
 
 linux:
 	GOOS=linux GOARCH=386 $(builder)-linux-386 $(package)
