@@ -52,7 +52,6 @@ func makeEpub(z *zipOp, vols []Volume, title string, cover []byte) {
 	z.WriteFile("META-INF/container.xml", check(tplBox.Find("container.xml")).([]byte))
 
 	for _, vol := range vols {
-		fmt.Println("h")
 		for _, chap := range vol.Chapters {
 			w := z.Writer(fmt.Sprintf("OPS/c_%d.html", chap.ID))
 			noErr(tpls["chapter.html"].Execute(w, chap))
