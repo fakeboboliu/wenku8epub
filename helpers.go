@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-const dev = true
+var dev = false
 
 func noErr(err error) {
 	if err != nil {
