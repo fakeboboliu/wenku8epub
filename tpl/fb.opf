@@ -9,10 +9,15 @@
 	<manifest>
 		<item id="main-css" href="css/main.css" media-type="text/css"/>
 		<item id="nav" properties="nav" href="nav.html" media-type="application/xhtml+xml"/>
+
 		{{range .Volumes}}
 			{{range .Chapters}}
 				<item id="c_{{.ID}}" href="c_{{.ID}}.html" media-type="application/xhtml+xml"/>
 			{{end}}
+		{{end}}
+
+		{{range .Pictures}}
+			<item id="p_{{.ID}}" href="images/{{.Filename}}" media-type="{{.MediaType}}"/>
 		{{end}}
 
 		<item id="css" href="css/main.css" media-type="text/css"/>

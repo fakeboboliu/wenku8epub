@@ -3,7 +3,6 @@ package main
 import (
 	"archive/zip"
 	"github.com/mkideal/cli"
-	log "github.com/sirupsen/logrus"
 	"os"
 )
 
@@ -20,19 +19,12 @@ func main() {
 		z := zip.NewWriter(f)
 		zop := newZipOp(z)
 
-		vols, title, cover := getWenku8(argv.URL)
-		makeEpub(zop, vols, title, cover)
+		genor := getWenku8(argv.URL)
+		genor.MakeEpub(zop)
 
 		zop.Wait()
 		z.Close()
 		f.Close()
 		return nil
 	})
-}
-
-func check(ret interface{}, err error) interface{} {
-	if err != nil {
-		log.Panic(err)
-	}
-	return ret
 }

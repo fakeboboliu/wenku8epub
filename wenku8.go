@@ -24,50 +24,51 @@ func init() {
 	log.WithField("count", len(sels)).Info("Loaded selectors.")
 }
 
-func getWenku8(url string) ([]Volume, string, []byte) {
+func getWenku8(url string) *EpubGenor {
+	genor := &EpubGenor{}
+
 	prefix := strings.TrimSuffix(url, "index.htm")
 	args := strings.Split(url[strings.Index(url, "://")+3:], "/")
 	page, novelId := args[2], args[3]
 
-	cover := check(ioutil.ReadAll(check(http.Get(fmt.Sprintf("http://img.wkcdn.com/image/%s/%s/%ss.jpg", page, novelId, novelId))).(*http.Response).Body)).([]byte)
+	genor.Cover = check(ioutil.ReadAll(check(httpGetWithRetry(fmt.Sprintf("http://img.wkcdn.com/image/%s/%s/%ss.jpg", page, novelId, novelId))).(*http.Response).Body)).([]byte)
 
 	body := mustGet(url)
-
 	menuPage := check(goquery.NewDocumentFromReader(body)).(*goquery.Document)
-	vols := make([]Volume, 0)
 
-	title := menuPage.Find(sels["title"]).Text()
+	genor.Title = menuPage.Find(sels["title"]).Text()
 
 	var workingVol *Volume
 	menuPage.Find(sels["rows"]).Each(func(i int, row *goquery.Selection) {
 		volSel := row.Find(sels["vol"])
 		if volSel.Length() == 1 {
 			if workingVol != nil {
-				vols = append(vols, *workingVol)
+				genor.Vols = append(genor.Vols, *workingVol)
 			}
 			workingVol = newVol(volSel.Text())
 		} else {
 			row.Find(sels["chap"]).Each(func(i int, chapSel *goquery.Selection) {
 				if href, ok := chapSel.Attr("href"); ok {
-					chap := getChapter(prefix + href)
+					doc := getChapter(prefix + href).Find(sels["content"])
+					genor.DetectAndReplacePic(doc, prefix)
+					chap := check(doc.Html()).(string)
 					workingVol.Chapters = append(workingVol.Chapters, *newChapter(chapSel.Text(), chap))
 				}
 			})
 		}
 	})
 
-	return vols, title, cover
+	return genor
 }
 
-func getChapter(url string) string {
+func getChapter(url string) *goquery.Document {
 	log.WithField("url", url).Info("Getting chapter...")
 	body := mustGet(url)
 	page := check(goquery.NewDocumentFromReader(body)).(*goquery.Document)
-	content := check(page.Find(sels["content"]).Html()).(string)
-	return content
+	return page
 }
 
 func mustGet(url string) *mahonia.Reader {
-	body := mahonia.NewDecoder("gbk").NewReader(check(http.Get(url)).(*http.Response).Body)
+	body := mahonia.NewDecoder("gbk").NewReader(check(httpGetWithRetry(url)).(*http.Response).Body)
 	return body
 }
