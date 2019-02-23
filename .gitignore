@@ -1,0 +1,6 @@
+.idea/
+packrd/
+*-packr.go
+
+go.sum
+go.mod

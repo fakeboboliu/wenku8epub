@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+	<body>
+	<nav epub:type="toc">
+		<ol>
+		{{range .}}
+			<li>
+				<a href="c_{{(index .Chapters 0).ID}}.html">{{.Name}}</a>
+				<ol>
+				{{range .Chapters}}
+					<li><a href="c_{{.ID}}.html">{{.Name}}</a></li>
+				{{end}}
+				</ol>
+			</li>
+		{{end}}
+		</ol>
+	</nav>
+	</body>
+</html>

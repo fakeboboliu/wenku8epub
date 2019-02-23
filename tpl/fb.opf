@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<package version="3.0" unique-identifier="pub-id" xmlns="http://www.idpf.org/2007/opf">
+	<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+		<dc:title>{{.Title}}</dc:title>
+		<dc:identifier id="pub-id">urn:uuid:{{.UUID}}</dc:identifier>
+		<dc:language>zh-CN</dc:language>
+		<meta property="dcterms:modified">{{.Time}}</meta>
+	</metadata>
+	<manifest>
+		<item id="main-css" href="css/main.css" media-type="text/css"/>
+		<item id="nav" properties="nav" href="nav.html" media-type="application/xhtml+xml"/>
+		{{range .Volumes}}
+			{{range .Chapters}}
+				<item id="c_{{.ID}}" href="c_{{.ID}}.html" media-type="application/xhtml+xml"/>
+			{{end}}
+		{{end}}
+
+		<item id="css" href="css/main.css" media-type="text/css"/>
+		<item id="cover-image" href="images/cover.jpg" properties="cover-image" media-type="image/jpeg"/>
+	</manifest>
+	<spine>
+		{{range .Volumes}}
+			{{range .Chapters}}
+				<itemref idref="c_{{.ID}}" linear="yes"/>
+			{{end}}
+		{{end}}
+	</spine>
+</package>
