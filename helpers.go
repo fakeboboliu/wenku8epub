@@ -37,11 +37,9 @@ func randUUID() string {
 	return string(uuid)
 }
 
-const retries = 5
-
-func httpGetWithRetry(url string) (*http.Response, error) {
+func httpGetWithRetry(url string, times int) (*http.Response, error) {
 	var outErr error
-	for re := 0; re < retries; re++ {
+	for re := 0; re < times; re++ {
 		resp, err := http.Get(url)
 		if err == nil {
 			return resp, nil

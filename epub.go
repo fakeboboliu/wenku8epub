@@ -23,9 +23,12 @@ type EpubGenor struct {
 	Vols  []Volume
 	Cover []byte
 	Title string
-	Pics  []Picture
 
-	picC int
+	Pics   []Picture
+	picC   int
+	GetPic bool
+
+	retry int
 }
 
 var (

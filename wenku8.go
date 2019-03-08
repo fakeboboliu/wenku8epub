@@ -24,14 +24,13 @@ func init() {
 	log.WithField("count", len(sels)).Info("Loaded selectors.")
 }
 
-func getWenku8(url string) *EpubGenor {
-	genor := &EpubGenor{}
+func getWenku8(url string, genor *EpubGenor) {
 
 	prefix := strings.TrimSuffix(url, "index.htm")
 	args := strings.Split(url[strings.Index(url, "://")+3:], "/")
 	page, novelId := args[2], args[3]
 
-	genor.Cover = check(ioutil.ReadAll(check(httpGetWithRetry(fmt.Sprintf("http://img.wkcdn.com/image/%s/%s/%ss.jpg", page, novelId, novelId))).(*http.Response).Body)).([]byte)
+	genor.Cover = check(ioutil.ReadAll(check(httpGetWithRetry(fmt.Sprintf("http://img.wkcdn.com/image/%s/%s/%ss.jpg", page, novelId, novelId), genor.retry)).(*http.Response).Body)).([]byte)
 
 	body := mustGet(url)
 	menuPage := check(goquery.NewDocumentFromReader(body)).(*goquery.Document)
@@ -57,8 +56,6 @@ func getWenku8(url string) *EpubGenor {
 			})
 		}
 	})
-
-	return genor
 }
 
 func getChapter(url string) *goquery.Document {
@@ -69,6 +66,6 @@ func getChapter(url string) *goquery.Document {
 }
 
 func mustGet(url string) *mahonia.Reader {
-	body := mahonia.NewDecoder("gbk").NewReader(check(httpGetWithRetry(url)).(*http.Response).Body)
+	body := mahonia.NewDecoder("gbk").NewReader(check(httpGetWithRetry(url, 5)).(*http.Response).Body)
 	return body
 }

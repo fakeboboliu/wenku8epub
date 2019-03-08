@@ -24,6 +24,10 @@ func (pic Picture) Filename() string {
 }
 
 func (g *EpubGenor) DetectAndReplacePic(sel *goquery.Selection, prefix string) {
+	if !g.GetPic {
+		return
+	}
+
 	if sel.Find("img").Length() > 0 {
 		var wg sync.WaitGroup
 		picChan := make(chan *Picture, 64)
@@ -33,10 +37,10 @@ func (g *EpubGenor) DetectAndReplacePic(sel *goquery.Selection, prefix string) {
 			for pic := range picChan {
 				go func(pic *Picture) {
 					wg.Add(1)
-					data, err := getPic(pic.url)
+					data, err := getPic(pic.url, g.retry)
 					log.WithField("src", pic.url).Info("Got <img>")
 					if err != nil {
-						log.WithField("src", pic.url).Info("Get <img> failed")
+						log.WithField("src", pic.url).WithField("err", err).Info("Get <img> failed")
 						wg.Done()
 						return
 					}
@@ -73,8 +77,8 @@ func (g *EpubGenor) DetectAndReplacePic(sel *goquery.Selection, prefix string) {
 
 }
 
-func getPic(src string) ([]byte, error) {
-	resp, err := httpGetWithRetry(src)
+func getPic(src string, retry int) ([]byte, error) {
+	resp, err := httpGetWithRetry(src, retry)
 	if err != nil {
 		return nil, err
 	}
