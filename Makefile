@@ -3,6 +3,9 @@ package = github.com/popu125/wenku8epub
 
 all: linux windows macos upx
 
+packr:
+	packr2
+
 linux:
 	GOOS=linux GOARCH=386 $(builder)-linux-386 $(package)
 	GOOS=linux GOARCH=amd64 $(builder)-linux-amd64 $(package)
@@ -15,10 +18,10 @@ macos:
 	GOOS=darwin GOARCH=amd64 $(builder)-macos-amd64 $(package)
 
 upx:
-	upx dist/*
+	upx dist/wenku8-*
 
 prepare:
 	go get -x github.com/popu125/wenku8epub
 
 clean:
-	rm -rf dist/*
+	rm -rf dist/wenku8-*
