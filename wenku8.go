@@ -56,6 +56,7 @@ func getWenku8(url string, genor *EpubGenor) {
 			})
 		}
 	})
+	genor.Vols = append(genor.Vols, *workingVol)
 }
 
 func getChapter(url string) *goquery.Document {
