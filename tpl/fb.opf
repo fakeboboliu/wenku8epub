@@ -4,6 +4,7 @@
 		<dc:title>{{.Title}}</dc:title>
 		<dc:identifier id="pub-id">urn:uuid:{{.UUID}}</dc:identifier>
 		<dc:language>zh-CN</dc:language>
+		<dc:creator>{{.Author}}</dc:creator>
 		<meta property="dcterms:modified">{{.Time}}</meta>
 	</metadata>
 	<manifest>

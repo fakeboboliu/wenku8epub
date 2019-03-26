@@ -17,6 +17,7 @@ var (
 		"chap":    ".ccss > a",
 		"content": "#content",
 		"title":   "#title",
+		"author":  "#info",
 	}
 )
 
@@ -36,6 +37,7 @@ func getWenku8(url string, genor *EpubGenor) {
 	menuPage := check(goquery.NewDocumentFromReader(body)).(*goquery.Document)
 
 	genor.Title = menuPage.Find(sels["title"]).Text()
+	genor.Author = strings.Split(menuPage.Find(sels["author"]).Text(), "：")[1]
 
 	var workingVol *Volume
 	menuPage.Find(sels["rows"]).Each(func(i int, row *goquery.Selection) {

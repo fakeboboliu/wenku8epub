@@ -20,9 +20,10 @@ type Chapter struct {
 }
 
 type EpubGenor struct {
-	Vols  []Volume
-	Cover []byte
-	Title string
+	Vols   []Volume
+	Cover  []byte
+	Title  string
+	Author string
 
 	Pics   []Picture
 	picC   int
@@ -76,13 +77,14 @@ func (g *EpubGenor) MakeEpub(z *zipOp) {
 
 	type bookInfo struct {
 		Title    string
+		Author   string
 		Volumes  []Volume
 		Pictures []Picture
 		Time     string
 		UUID     string
 	}
 	w := z.Writer("OPS/fb.opf")
-	bi := bookInfo{Title: g.Title, Volumes: g.Vols, Pictures: g.Pics, Time: time.Now().String(), UUID: randUUID()}
+	bi := bookInfo{Title: g.Title, Volumes: g.Vols, Pictures: g.Pics, Author: g.Author, Time: time.Now().String(), UUID: randUUID()}
 	noErr(tpls["fb.opf"].Execute(w, bi))
 	w.Flush()
 
