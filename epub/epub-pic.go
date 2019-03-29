@@ -1,8 +1,9 @@
-package main
+package epub
 
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	. "github.com/popu125/wenku8epub/helpers"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"mime"
@@ -37,7 +38,7 @@ func (g *EpubGenor) DetectAndReplacePic(sel *goquery.Selection, prefix string) {
 			for pic := range picChan {
 				go func(pic *Picture) {
 					wg.Add(1)
-					data, err := getPic(pic.url, g.retry)
+					data, err := getPic(pic.url, g.Retry)
 					log.WithField("src", pic.url).Info("Got <img>")
 					if err != nil {
 						log.WithField("src", pic.url).WithField("err", err).Info("Get <img> failed")
@@ -78,7 +79,7 @@ func (g *EpubGenor) DetectAndReplacePic(sel *goquery.Selection, prefix string) {
 }
 
 func getPic(src string, retry int) ([]byte, error) {
-	resp, err := httpGetWithRetry(src, retry)
+	resp, err := HttpGetWithRetry(src, retry)
 	if err != nil {
 		return nil, err
 	}

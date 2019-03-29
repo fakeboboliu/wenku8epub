@@ -1,4 +1,4 @@
-package main
+package helpers
 
 import (
 	log "github.com/sirupsen/logrus"
@@ -8,7 +8,7 @@ import (
 
 var dev = false
 
-func noErr(err error) {
+func NoErr(err error) {
 	if err != nil {
 		if dev {
 			log.Panic(err)
@@ -18,12 +18,12 @@ func noErr(err error) {
 	}
 }
 
-func check(ret interface{}, err error) interface{} {
-	noErr(err)
+func Check(ret interface{}, err error) interface{} {
+	NoErr(err)
 	return ret
 }
 
-func randUUID() string {
+func RandUUID() string {
 	const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	uuid := []byte("")
 	for i := 36; i > 0; i-- {
@@ -37,7 +37,7 @@ func randUUID() string {
 	return string(uuid)
 }
 
-func httpGetWithRetry(url string, times int) (*http.Response, error) {
+func HttpGetWithRetry(url string, times int) (*http.Response, error) {
 	var outErr error
 	for re := 0; re < times; re++ {
 		resp, err := http.Get(url)

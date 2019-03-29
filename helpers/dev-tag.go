@@ -1,6 +1,6 @@
 // +build dev
 
-package main
+package helpers
 
 func init() {
 	dev = true

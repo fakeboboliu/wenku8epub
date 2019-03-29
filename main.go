@@ -3,7 +3,10 @@ package main
 import (
 	"archive/zip"
 	"github.com/mkideal/cli"
+	"github.com/popu125/wenku8epub/epub"
 	"os"
+
+	. "github.com/popu125/wenku8epub/helpers"
 )
 
 type argT struct {
@@ -17,12 +20,12 @@ type argT struct {
 func main() {
 	cli.Run(new(argT), func(ctx *cli.Context) error {
 		argv := ctx.Argv().(*argT)
-		f := check(os.Create(argv.Out)).(*os.File)
+		f := Check(os.Create(argv.Out)).(*os.File)
 		z := zip.NewWriter(f)
-		zop := newZipOp(z)
+		zop := epub.NewZipOp(z)
 
-		genor := &EpubGenor{}
-		genor.retry = argv.Retry
+		genor := &epub.EpubGenor{}
+		genor.Retry = argv.Retry
 		genor.GetPic = !argv.NoPic
 		getWenku8(argv.URL, genor)
 		genor.MakeEpub(zop)

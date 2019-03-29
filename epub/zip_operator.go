@@ -1,4 +1,4 @@
-package main
+package epub
 
 import (
 	"archive/zip"
@@ -26,7 +26,7 @@ func (zw *zipW) Flush() {
 	zw.z.WriteFile(zw.fn, zw.buf.Bytes())
 }
 
-func newZipOp(w *zip.Writer) *zipOp {
+func NewZipOp(w *zip.Writer) *zipOp {
 	op := &zipOp{w: w, c: make(chan task, 64), done: make(chan bool)}
 	go op.zipWriter()
 	return op
