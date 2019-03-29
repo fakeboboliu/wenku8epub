@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/gobuffalo/packr/v2"
 	log "github.com/sirupsen/logrus"
+	"strconv"
+	"strings"
 	"text/template"
 	"time"
 
@@ -11,18 +13,20 @@ import (
 )
 
 type Volume struct {
-	Name     string
-	Chapters []Chapter
+	Name       string
+	Chapters   []*Chapter
+	Downloaded bool
 }
 
 type Chapter struct {
-	ID   int
-	Name string
-	Text string
+	ChapNo int
+	Name   string
+	URL    string
+	Text   string
 }
 
 type EpubGenor struct {
-	Vols   []Volume
+	Vols   []*Volume
 	Cover  []byte
 	Title  string
 	Author string
@@ -51,12 +55,12 @@ func init() {
 }
 
 func NewVol(name string) *Volume {
-	return &Volume{Name: name, Chapters: make([]Chapter, 0)}
+	return &Volume{Name: name, Chapters: make([]*Chapter, 0)}
 }
 
-func NewChapter(name string, text string) *Chapter {
+func NewChapter(name string, url string) *Chapter {
 	_chapter_counter++
-	return &Chapter{ChapNo: _chapter_counter, Name: name, Text: text}
+	return &Chapter{ChapNo: _chapter_counter, Name: name, URL: url}
 }
 
 func (g *EpubGenor) MakeEpub(z *zipOp) {
@@ -80,7 +84,7 @@ func (g *EpubGenor) MakeEpub(z *zipOp) {
 	type bookInfo struct {
 		Title    string
 		Author   string
-		Volumes  []Volume
+		Volumes  []*Volume
 		Pictures []Picture
 		Time     string
 		UUID     string
@@ -100,4 +104,17 @@ func (g *EpubGenor) MakeEpub(z *zipOp) {
 func (g *EpubGenor) picID() int {
 	g.picC++
 	return g.picC
+}
+
+func (g *EpubGenor) DetectTitle() {
+	downs := make([]string, 0)
+	for no, vol := range g.Vols {
+		if vol.Downloaded {
+			downs = append(downs, strconv.Itoa(no))
+		}
+	}
+
+	if len(downs) != len(g.Vols) {
+		g.Title = fmt.Sprint(g.Title, "-", strings.Join(downs, ","))
+	}
 }

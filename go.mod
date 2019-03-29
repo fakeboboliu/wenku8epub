@@ -12,4 +12,5 @@ require (
 	github.com/mkideal/cli v0.0.2
 	github.com/mkideal/pkg v0.0.0-20170503154153-3e188c9e7ecc // indirect
 	github.com/sirupsen/logrus v1.3.0
+	go.etcd.io/bbolt v1.3.2 // indirect
 )

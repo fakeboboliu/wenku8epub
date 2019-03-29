@@ -27,7 +27,11 @@ func main() {
 		genor := &epub.EpubGenor{}
 		genor.Retry = argv.Retry
 		genor.GetPic = !argv.NoPic
-		getWenku8(argv.URL, genor)
+		src := NewWenku8(argv.URL, genor)
+		src.GetMenu()
+		for _, vol := range genor.Vols {
+			src.GetVolume(vol)
+		}
 		genor.MakeEpub(zop)
 
 		zop.Wait()

@@ -13,7 +13,7 @@
 
 		{{range .Volumes}}
 			{{range .Chapters}}
-				<item id="c_{{.ID}}" href="c_{{.ID}}.html" media-type="application/xhtml+xml"/>
+				<item id="c_{{.ChapNo}}" href="c_{{.ChapNo}}.html" media-type="application/xhtml+xml"/>
 			{{end}}
 		{{end}}
 
@@ -27,7 +27,7 @@
 	<spine>
 		{{range .Volumes}}
 			{{range .Chapters}}
-				<itemref idref="c_{{.ID}}" linear="yes"/>
+				<itemref idref="c_{{.ChapNo}}" linear="yes"/>
 			{{end}}
 		{{end}}
 	</spine>
