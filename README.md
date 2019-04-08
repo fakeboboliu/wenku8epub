@@ -4,7 +4,11 @@
 
 ## Usage
 
-`./wenku8epub -h`
+`./wenku8 -h`
+
+请注意，目前 `-u` 参数仅支持传入目录页的url，如：
+
+`./wenku8 -u https://www.wenku8.net/novel/1/1359/index.htm -o out.epub`
 
 ## LICENSE
 
