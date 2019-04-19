@@ -31,7 +31,7 @@ type EpubGenor struct {
 	Title  string
 	Author string
 
-	Pics   []Picture
+	Pics   []*Picture
 	picC   int
 	GetPic bool
 
@@ -85,7 +85,7 @@ func (g *EpubGenor) MakeEpub(z *zipOp) {
 		Title    string
 		Author   string
 		Volumes  []*Volume
-		Pictures []Picture
+		Pictures []*Picture
 		Time     string
 		UUID     string
 	}

@@ -1,14 +1,20 @@
 package epub
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	. "github.com/popu125/wenku8epub/helpers"
 	log "github.com/sirupsen/logrus"
+	"image"
+	"image/gif"
+	"image/jpeg"
+	"image/png"
 	"io/ioutil"
 	"mime"
 	"net/url"
 	"path"
+	"strings"
 	"sync"
 )
 
@@ -46,7 +52,7 @@ func (g *EpubGenor) DetectAndReplacePic(sel *goquery.Selection, prefix string) {
 						return
 					}
 					pic.Data = data
-					g.Pics = append(g.Pics, *pic)
+					g.Pics = append(g.Pics, pic)
 					wg.Done()
 				}(pic)
 			}
@@ -88,4 +94,32 @@ func getPic(src string, retry int) ([]byte, error) {
 		return nil, err
 	}
 	return data, nil
+}
+
+func (g *EpubGenor) CompressPic(quality int) {
+	for _, pic := range g.Pics {
+		oldSize := len(pic.Data)
+
+		f := bytes.NewReader(pic.Data)
+		var img image.Image
+		var err error
+		switch strings.ToLower(pic.MediaType) {
+		case "image/jpeg":
+			img, err = jpeg.Decode(f)
+		case "image/png":
+			img, err = png.Decode(f)
+		case "image/gif":
+			img, err = gif.Decode(f)
+		}
+		if err != nil {
+			log.WithField("pic", pic.Filename()).WithError(err).Error()
+			return
+		}
+
+		buf := new(bytes.Buffer)
+		jpeg.Encode(buf, img, &jpeg.Options{Quality: 50})
+		pic.Data = buf.Bytes()
+
+		log.WithField("before", oldSize).WithField("after", len(pic.Data)).WithField("pic", pic.ID).Info("Compressed image")
+	}
 }

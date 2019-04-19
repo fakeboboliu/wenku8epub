@@ -15,6 +15,7 @@ type argT struct {
 	Out   string `cli:"*o,out" usage:"Output file"`
 	Retry int    `cli:"r,retry" usage:"Retry times while downloading images" dft:"2"`
 	NoPic bool   `cli:"nopic" usage:"Do not download images" dft:"false"`
+	PicQ  int    `cli:"q,quality" usage:"Quality of compressed image file (1-100, higher is better)" dft:"60"`
 }
 
 func main() {
@@ -31,6 +32,9 @@ func main() {
 		src.GetMenu()
 		for _, vol := range genor.Vols {
 			src.GetVolume(vol)
+		}
+		if argv.PicQ != 100 {
+			genor.CompressPic(argv.PicQ)
 		}
 		genor.MakeEpub(zop)
 

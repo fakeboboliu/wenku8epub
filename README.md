@@ -4,6 +4,8 @@
 
 ## Usage
 
+[Download at releases page](https://github.com/popu125/wenku8epub/releases)
+
 `./wenku8 -h`
 
 请注意，目前 `-u` 参数仅支持传入目录页的url，如：
