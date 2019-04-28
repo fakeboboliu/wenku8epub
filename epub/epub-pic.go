@@ -119,6 +119,7 @@ func (g *EpubGenor) CompressPic(quality int) {
 		buf := new(bytes.Buffer)
 		jpeg.Encode(buf, img, &jpeg.Options{Quality: 50})
 		pic.Data = buf.Bytes()
+		pic.Ext = ".jpg"
 
 		log.WithField("before", oldSize).WithField("after", len(pic.Data)).WithField("pic", pic.ID).Info("Compressed image")
 	}
