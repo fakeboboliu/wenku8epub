@@ -7,6 +7,7 @@ import (
 	"os"
 
 	. "github.com/popu125/wenku8epub/helpers"
+	. "github.com/popu125/wenku8epub/sources"
 )
 
 type argT struct {

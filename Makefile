@@ -1,10 +1,12 @@
 builder = go build -ldflags="-s -w" -x -o dist/wenku8
-package = github.com/popu125/wenku8epub
+package = github.com/popu125/wenku8epub/cli
 
 all: linux windows macos upx
 
 packr:
+	cd cli
 	packr2
+	cd ..
 
 linux:
 	GOOS=linux GOARCH=386 $(builder)-linux-386 $(package)
@@ -21,7 +23,8 @@ upx:
 	upx dist/wenku8-*
 
 prepare:
-	go get -x github.com/popu125/wenku8epub
+	go get -d -x github.com/popu125/wenku8epub/cli
 
 clean:
 	rm -rf dist/wenku8-*
+	packr2 clean
