@@ -41,7 +41,7 @@ func (s wenku8Src) GetMenu() {
 	args := strings.Split(s.url[strings.Index(s.url, "://")+3:], "/")
 	page, novelId := args[2], args[3]
 
-	s.genor.Cover = Check(ioutil.ReadAll(Check(HttpGetWithRetry(fmt.Sprintf("http://img.wkcdn.com/image/%s/%s/%ss.jpg", page, novelId, novelId), s.genor.Retry)).(*http.Response).Body)).([]byte)
+	s.genor.Cover = Check(ioutil.ReadAll(Check(HttpGetWithRetry(fmt.Sprintf("http://img.wenku8.com/image/%s/%s/%ss.jpg", page, novelId, novelId), s.genor.Retry)).(*http.Response).Body)).([]byte)
 
 	body := mustGet(s.url)
 	menuPage := Check(goquery.NewDocumentFromReader(body)).(*goquery.Document)
@@ -53,6 +53,7 @@ func (s wenku8Src) GetMenu() {
 	menuPage.Find(sels["rows"]).Each(func(i int, row *goquery.Selection) {
 		volSel := row.Find(sels["vol"])
 		if volSel.Length() == 1 {
+			log.WithField("name", volSel.Text()).Info("New Volume")
 			if workingVol != nil {
 				s.genor.Vols = append(s.genor.Vols, workingVol)
 			}
@@ -60,6 +61,7 @@ func (s wenku8Src) GetMenu() {
 		} else {
 			row.Find(sels["chap"]).Each(func(i int, chapSel *goquery.Selection) {
 				if href, ok := chapSel.Attr("href"); ok {
+					log.WithField("name", chapSel.Text()).Info("New Chapter")
 					workingVol.Chapters = append(workingVol.Chapters, epub.NewChapter(chapSel.Text(), href))
 				}
 			})
