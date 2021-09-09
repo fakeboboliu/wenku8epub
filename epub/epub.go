@@ -1,15 +1,16 @@
 package epub
 
 import (
+	"embed"
 	"fmt"
-	"github.com/gobuffalo/packr/v2"
-	log "github.com/sirupsen/logrus"
 	"strconv"
 	"strings"
 	"text/template"
 	"time"
 
 	. "github.com/popu125/wenku8epub/helpers"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Volume struct {
@@ -38,18 +39,26 @@ type EpubGenor struct {
 	Retry int
 }
 
+//go:embed tpl/*
+var tpl embed.FS
+
 var (
 	_chapter_counter = 0
 
-	tpls   = map[string]*template.Template{}
-	tplBox *packr.Box
+	tpls         = map[string]*template.Template{}
+	builtinFiles = map[string][]byte{}
 )
 
 func init() {
-	tplBox = packr.New("tplBox", "./tpl")
-	for _, name := range tplBox.List() {
-		s := Check(tplBox.FindString(name)).(string)
-		tpls[name] = template.Must(template.New("").Parse(s))
+	tplList, err := tpl.ReadDir("tpl")
+	if err != nil {
+		panic(err)
+	}
+	for _, f := range tplList {
+		name := f.Name()
+		data := Check(tpl.ReadFile("tpl/" + name)).([]byte)
+		tpls[name] = template.Must(template.New("").Parse(string(data)))
+		builtinFiles[name] = data
 		log.WithField("name", name).Info("Loaded template.")
 	}
 }
@@ -65,9 +74,9 @@ func NewChapter(name string, url string) *Chapter {
 
 func (g *EpubGenor) MakeEpub(z *zipOp) {
 	z.WriteFile("OPS/images/cover.jpg", g.Cover)
-	z.WriteFile("OPS/css/main.css", Check(tplBox.Find("main.css")).([]byte))
-	z.WriteFile("mimetype", Check(tplBox.Find("mimetype")).([]byte))
-	z.WriteFile("META-INF/container.xml", Check(tplBox.Find("container.xml")).([]byte))
+	z.WriteFile("OPS/css/main.css", builtinFiles["main.css"])
+	z.WriteFile("mimetype", builtinFiles["mimetype"])
+	z.WriteFile("META-INF/container.xml", builtinFiles["container.xml"])
 
 	for _, vol := range g.Vols {
 		for _, chap := range vol.Chapters {

@@ -5,8 +5,8 @@
 		<ol>
 		{{range .}}
 			<li>
-				{{if ((len .Chapters) gt 0)}}
-					<a href="c_{{(index .Chapters 0).ChapNo}}.html">{{.Name}}</a>
+				{{if (gt (len .Chapters) 0)}}
+				<a href="c_{{(index .Chapters 0).ChapNo}}.html">{{.Name}}</a>
 					<ol>
 						{{range .Chapters}}
 							<li><a href="c_{{.ChapNo}}.html">{{.Name}}</a></li>
